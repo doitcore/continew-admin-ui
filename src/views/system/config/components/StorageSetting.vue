@@ -3,10 +3,11 @@
     <a-form
       ref="formRef"
       :model="form"
-      :rules="rules"
+      :rules="form.STORAGE_DEFAULT === 'LOCAL' ? localRules : s3Rules"
       auto-label-width
       label-align="left"
       :layout="width >= 500 ? 'horizontal' : 'vertical'"
+      class="input-width"
       :disabled="!isUpdate"
       scroll-to-first-error
     >
@@ -14,77 +15,76 @@
       <a-form-item
         field="STORAGE_DEFAULT"
         :label="storageConfig.STORAGE_DEFAULT.name"
-        :help="storageConfig.STORAGE_DEFAULT.description"
-        hide-asterisk
       >
         <a-radio-group v-model="form.STORAGE_DEFAULT">
           <a-radio value="LOCAL">本地存储</a-radio>
-          <a-radio value="S3">对象存储</a-radio>
+          <a-radio value="S3">S3存储</a-radio>
         </a-radio-group>
       </a-form-item>
 
-      <!-- 本地存储分组 -->
-      <a-divider>本地存储配置</a-divider>
-      <a-form-item
-        field="STORAGE_LOCAL_BUCKET"
-        :label="storageConfig.STORAGE_LOCAL_BUCKET.name"
-        :help="storageConfig.STORAGE_LOCAL_BUCKET.description"
-        hide-asterisk
-      >
-        <a-input v-model="form.STORAGE_LOCAL_BUCKET" class="input-width" placeholder="请输入绝对路径" />
-      </a-form-item>
-      <a-form-item
-        field="STORAGE_LOCAL_ENDPOINT"
-        :label="storageConfig.STORAGE_LOCAL_ENDPOINT.name"
-        :help="storageConfig.STORAGE_LOCAL_ENDPOINT.description"
-        hide-asterisk
-      >
-        <a-input v-model="form.STORAGE_LOCAL_ENDPOINT" class="input-width" placeholder="请输入本地终端节点" />
-      </a-form-item>
+      <fieldset>
+        <legend>本地存储配置</legend>
+        <a-form-item
+          field="STORAGE_LOCAL_BUCKET"
+          :label="storageConfig.STORAGE_LOCAL_BUCKET.name"
+          :help="storageConfig.STORAGE_LOCAL_BUCKET.description"
+          hide-asterisk
+        >
+          <a-input v-model="form.STORAGE_LOCAL_BUCKET" />
+        </a-form-item>
+        <a-form-item
+          field="STORAGE_LOCAL_ENDPOINT"
+          :label="storageConfig.STORAGE_LOCAL_ENDPOINT.name"
+          :help="storageConfig.STORAGE_LOCAL_ENDPOINT.description"
+          hide-asterisk
+        >
+          <a-input v-model="form.STORAGE_LOCAL_ENDPOINT" />
+        </a-form-item>
+      </fieldset>
 
-      <!-- S3存储分组 -->
-      <a-divider>对象存储配置</a-divider>
-      <a-form-item
-        field="STORAGE_S3_ACCESS_KEY"
-        :label="storageConfig.STORAGE_S3_ACCESS_KEY.name"
-        :help="storageConfig.STORAGE_S3_ACCESS_KEY.description"
-        hide-asterisk
-      >
-        <a-input v-model="form.STORAGE_S3_ACCESS_KEY" class="input-width" />
-      </a-form-item>
-      <a-form-item
-        field="STORAGE_S3_SECRET_KEY"
-        :label="storageConfig.STORAGE_S3_SECRET_KEY.name"
-        :help="storageConfig.STORAGE_S3_SECRET_KEY.description"
-        hide-asterisk
-      >
-        <a-input-password v-model="form.STORAGE_S3_SECRET_KEY" class="input-width" />
-      </a-form-item>
-      <a-form-item
-        field="STORAGE_S3_BUCKET"
-        :label="storageConfig.STORAGE_S3_BUCKET.name"
-        :help="storageConfig.STORAGE_S3_BUCKET.description"
-        hide-asterisk
-      >
-        <a-input v-model="form.STORAGE_S3_BUCKET" class="input-width" />
-      </a-form-item>
-      <a-form-item
-        field="STORAGE_S3_ENDPOINT"
-        :label="storageConfig.STORAGE_S3_ENDPOINT.name"
-        :help="storageConfig.STORAGE_S3_ENDPOINT.description"
-        hide-asterisk
-      >
-        <a-input v-model="form.STORAGE_S3_ENDPOINT" class="input-width" />
-      </a-form-item>
-      <a-form-item
-        field="STORAGE_S3_REGION"
-        :label="storageConfig.STORAGE_S3_REGION.name"
-        :help="storageConfig.STORAGE_S3_REGION.description"
-        hide-asterisk
-      >
-        <a-input v-model="form.STORAGE_S3_REGION" class="input-width" />
-      </a-form-item>
-
+      <fieldset>
+        <legend>S3存储配置</legend>
+        <a-form-item
+          field="STORAGE_S3_ACCESS_KEY"
+          :label="storageConfig.STORAGE_S3_ACCESS_KEY.name"
+          :help="storageConfig.STORAGE_S3_ACCESS_KEY.description"
+          hide-asterisk
+        >
+          <a-input v-model="form.STORAGE_S3_ACCESS_KEY" />
+        </a-form-item>
+        <a-form-item
+          field="STORAGE_S3_SECRET_KEY"
+          :label="storageConfig.STORAGE_S3_SECRET_KEY.name"
+          :help="storageConfig.STORAGE_S3_SECRET_KEY.description"
+          hide-asterisk
+        >
+          <a-input-password v-model="form.STORAGE_S3_SECRET_KEY" />
+        </a-form-item>
+        <a-form-item
+          field="STORAGE_S3_BUCKET"
+          :label="storageConfig.STORAGE_S3_BUCKET.name"
+          :help="storageConfig.STORAGE_S3_BUCKET.description"
+          hide-asterisk
+        >
+          <a-input v-model="form.STORAGE_S3_BUCKET" />
+        </a-form-item>
+        <a-form-item
+          field="STORAGE_S3_ENDPOINT"
+          :label="storageConfig.STORAGE_S3_ENDPOINT.name"
+          :help="storageConfig.STORAGE_S3_ENDPOINT.description"
+          hide-asterisk
+        >
+          <a-input v-model="form.STORAGE_S3_ENDPOINT" />
+        </a-form-item>
+        <a-form-item
+          field="STORAGE_S3_REGION"
+          :label="storageConfig.STORAGE_S3_REGION.name"
+          :help="storageConfig.STORAGE_S3_REGION.description"
+          hide-asterisk
+        >
+          <a-input v-model="form.STORAGE_S3_REGION" />
+        </a-form-item>
+      </fieldset>
       <!-- 操作按钮 -->
       <a-space style="margin-bottom: 16px">
         <a-button v-if="!isUpdate" v-permission="['system:config:update']" type="primary" @click="onUpdate">
@@ -152,13 +152,16 @@ const [form] = useResetReactive({
   STORAGE_S3_REGION: '',
 })
 
-const rules: FormInstance['rules'] = {
+const localRules: FormInstance['rules'] = {
   STORAGE_LOCAL_BUCKET: [{ required: true, message: '请输入本地存储路径' }],
-  STORAGE_LOCAL_ENDPOINT: [{ required: true, message: '请输入本地终端地址' }],
-  STORAGE_S3_ACCESS_KEY: [{ required: true, message: '请输入对象存储访问密钥' }],
-  STORAGE_S3_SECRET_KEY: [{ required: true, message: '请输入对象存储私有密钥' }],
-  STORAGE_S3_BUCKET: [{ required: true, message: '请输入对象存储存储桶名称' }],
-  STORAGE_S3_ENDPOINT: [{ required: true, message: '请输入对象存储终端节点' }],
+  STORAGE_LOCAL_ENDPOINT: [{ required: true, message: '请输入服务映射路径' }],
+}
+
+const s3Rules: FormInstance['rules'] = {
+  STORAGE_S3_ACCESS_KEY: [{ required: true, message: '请输入S3存储访问密钥' }],
+  STORAGE_S3_SECRET_KEY: [{ required: true, message: '请输入S3存储私有密钥' }],
+  STORAGE_S3_BUCKET: [{ required: true, message: '请输入S3存储存储桶名称' }],
+  STORAGE_S3_ENDPOINT: [{ required: true, message: '请输入S3存储终端节点' }],
 }
 
 const storageConfig = ref<StorageConfig>({
@@ -199,7 +202,7 @@ const getDataList = async () => {
     obj[option.code] = { ...option, value: option.value }
     return obj
   }, {})
-  reset() // 初始化时同步表单值
+  handleCancel()
   loading.value = false
 }
 
@@ -235,7 +238,23 @@ onMounted(() => {
 </script>
 
 <style scoped lang="scss">
-.input-width {
-  width: 300px;
+:deep(.input-width .arco-input-wrapper) {
+  min-width: 300px;
+}
+
+fieldset {
+  display: inline-block;
+  width: fit-content;
+  min-width: 0;
+  padding: 15px;
+  margin-bottom: 15px;
+  border: 1px solid var(--color-neutral-3);
+  border-radius: 3px;
+}
+fieldset legend {
+  color: rgb(var(--gray-10));
+  padding: 2px 5px 2px 5px;
+  border: 1px solid var(--color-neutral-3);
+  border-radius: 3px;
 }
 </style>

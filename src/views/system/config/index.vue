@@ -6,20 +6,20 @@
       </a-space>
     </a-row> -->
     <a-tabs v-model:active-key="activeKey" type="card-gutter" size="large" @change="change">
-      <a-tab-pane key="1">
+      <a-tab-pane key="basic">
         <template #title><icon-settings /> 基础配置</template>
       </a-tab-pane>
-      <a-tab-pane key="2">
+      <a-tab-pane key="security">
         <template #title><icon-safe /> 安全配置</template>
       </a-tab-pane>
-      <a-tab-pane key="3">
+      <a-tab-pane key="mail">
         <template #title><icon-email /> 邮件配置</template>
       </a-tab-pane>
-      <a-tab-pane key="4">
-        <template #title><icon-lock /> 登录配置</template>
-      </a-tab-pane>
-      <a-tab-pane key="5">
+      <a-tab-pane key="storage">
         <template #title><icon-storage /> 存储配置</template>
+      </a-tab-pane>
+      <a-tab-pane key="login">
+        <template #title><icon-lock /> 登录配置</template>
       </a-tab-pane>
     </a-tabs>
     <keep-alive>
@@ -39,28 +39,28 @@ import StorageSetting from './components/StorageSetting.vue'
 defineOptions({ name: 'SystemConfig' })
 
 const PanMap: Record<string, Component> = {
-  1: BasicSetting,
-  2: SecuritySetting,
-  3: MailSetting,
-  4: LoginSetting,
-  5: StorageSetting,
+  basic: BasicSetting,
+  security: SecuritySetting,
+  mail: MailSetting,
+  storage: StorageSetting,
+  login: LoginSetting,
 }
 
 const route = useRoute()
 const router = useRouter()
-const activeKey = ref('1')
+const activeKey = ref('basic')
 watch(
   () => route.query,
   () => {
-    if (route.query.tabKey) {
-      activeKey.value = String(route.query.tabKey)
+    if (route.query.tab) {
+      activeKey.value = String(route.query.tab)
     }
   },
   { immediate: true },
 )
 const change = (key: string | number) => {
   activeKey.value = key as string
-  router.replace({ path: route.path, query: { tabKey: key } })
+  router.replace({ path: route.path, query: { tab: key } })
 }
 </script>
 
